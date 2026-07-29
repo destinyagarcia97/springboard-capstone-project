@@ -1,18 +1,14 @@
-const express = require("express");
+const app = require("./app");
+const connectDB = require("./config/db");
 
-const app = express();
 const PORT = 5000;
 
-app.get("/", (req, res) => {
-  res.send("Welcome to the CareCompass API");
-});
+async function startServer() {
+  await connectDB();
 
-app.get("/api/health", (req, res) => {
-  res.json({
-    message: "CareCompass API is running",
+  app.listen(PORT, () => {
+    console.log(`CareCompass server is running on port ${PORT}`);
   });
-});
+}
 
-app.listen(PORT, () => {
-  console.log(`CareCompass server is running on port ${PORT}`);
-});
+startServer();
