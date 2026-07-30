@@ -3,6 +3,9 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
+const API_URL =
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+
 export default function FavoritesPage() {
   const [favorites, setFavorites] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -20,14 +23,11 @@ export default function FavoritesPage() {
         throw new Error("You must be logged in to view favorites.");
       }
 
-      const response = await fetch(
-        "http://localhost:5000/api/favorites",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await fetch(`${API_URL}/api/favorites`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       const data = await response.json();
 
@@ -50,8 +50,12 @@ export default function FavoritesPage() {
 
       const token = localStorage.getItem("token");
 
+      if (!token) {
+        throw new Error("You must be logged in to remove favorites.");
+      }
+
       const response = await fetch(
-        `http://localhost:5000/api/favorites/${providerId}`,
+        `${API_URL}/api/favorites/${providerId}`,
         {
           method: "DELETE",
           headers: {
@@ -158,6 +162,13 @@ export default function FavoritesPage() {
                   </div>
                 )}
 
+                <Link
+                  href={`/providers/${provider._id}`}
+                  style={styles.detailsButton}
+                >
+                  View Details
+                </Link>
+
                 <button
                   type="button"
                   style={styles.removeButton}
@@ -249,9 +260,21 @@ const styles = {
     paddingLeft: "20px",
   },
 
+  detailsButton: {
+    display: "block",
+    marginTop: "20px",
+    padding: "12px",
+    border: "2px solid #2563eb",
+    borderRadius: "6px",
+    color: "#2563eb",
+    fontWeight: "bold",
+    textAlign: "center",
+    textDecoration: "none",
+  },
+
   removeButton: {
     width: "100%",
-    marginTop: "20px",
+    marginTop: "12px",
     padding: "12px",
     border: "none",
     borderRadius: "6px",

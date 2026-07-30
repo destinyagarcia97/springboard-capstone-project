@@ -4,6 +4,9 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import styles from "./page.module.css";
 
+const API_URL =
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+
 export default function Home() {
   const [providers, setProviders] = useState([]);
   const [city, setCity] = useState("");
@@ -28,7 +31,7 @@ export default function Home() {
         params.append("category", searchCategory);
       }
 
-      const url = `http://localhost:5000/api/providers${
+      const url = `${API_URL}/api/providers${
         params.toString() ? `?${params.toString()}` : ""
       }`;
 
@@ -78,7 +81,7 @@ export default function Home() {
       }
 
       const response = await fetch(
-        `http://localhost:5000/api/favorites/${providerId}`,
+        `${API_URL}/api/favorites/${providerId}`,
         {
           method: "POST",
           headers: {
@@ -171,9 +174,7 @@ export default function Home() {
         <h2>Available Providers</h2>
 
         {message && <p className={styles.success}>{message}</p>}
-
         {error && <p className={styles.error}>{error}</p>}
-
         {loading && <p className={styles.status}>Loading providers...</p>}
 
         {!loading && !error && providers.length === 0 && (

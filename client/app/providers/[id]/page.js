@@ -4,6 +4,9 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 
+const API_URL =
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+
 export default function ProviderDetailsPage() {
   const params = useParams();
   const [provider, setProvider] = useState(null);
@@ -17,7 +20,7 @@ export default function ProviderDetailsPage() {
         setError("");
 
         const response = await fetch(
-          `http://localhost:5000/api/providers/${params.id}`
+          `${API_URL}/api/providers/${params.id}`
         );
 
         const data = await response.json();
@@ -47,6 +50,19 @@ export default function ProviderDetailsPage() {
     return (
       <main style={styles.center}>
         <p style={styles.error}>{error}</p>
+
+        <Link href="/" style={styles.link}>
+          Return home
+        </Link>
+      </main>
+    );
+  }
+
+  if (!provider) {
+    return (
+      <main style={styles.center}>
+        <p style={styles.error}>Provider not found.</p>
+
         <Link href="/" style={styles.link}>
           Return home
         </Link>
